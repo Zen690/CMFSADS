@@ -133,4 +133,84 @@ public class CMFSADS {
     static void editStallInfo() {
         scanner.nextLine(); // Consume newline
         System.out.print("Enter owner name to edit: ");
+        String ownerName = scanner.nextLine();
+        boolean found = false;
+        for (int i = 0; i < count; i++) {
+            if (stallOwners[i].ownerName.equalsIgnoreCase(ownerName)) {
+                System.out.print("Enter new stall name: ");
+                String newStallName = scanner.nextLine();
+                if (validateStallName(newStallName)) {
+                    stallOwners[i].stallName = newStallName;
+                    System.out.println("Successfully updated.");
+                } else {
+                    System.out.println("Error: Invalid stall name format.");
+                }
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("Owner not found.");
+        }
+    }
 
+    // Method to display all stall owners
+    static void displayAllStallOwners() {
+        if (count == 0) {
+            System.out.println("No stall owners to display.");
+            return;
+        }
+        for (int i = 0; i < count; i++) {
+            System.out.println("Owner: " + stallOwners[i].ownerName);
+            System.out.println("Stall: " + stallOwners[i].stallName);
+            System.out.println("Location: " + stallOwners[i].location);
+            System.out.println("Contact: " + stallOwners[i].contactNumber);
+            System.out.println("Food Type: " + stallOwners[i].foodType);
+            System.out.println("---");
+        }
+    }
+
+    // Method to compute most common food type
+    static void computeMostCommonFoodType() {
+        if (count < 3) {
+            System.out.println("At least 3 stall owners required.");
+            return;
+        }
+        String[] foodTypes = new String[count];
+        for (int i = 0; i < count; i++) {
+            foodTypes[i] = stallOwners[i].foodType;
+        }
+        String mostCommon = "";
+        int maxCount = 0;
+        for (int i = 0; i < count; i++) {
+            int currentCount = 0;
+            for (int j = 0; j < count; j++) {
+                if (foodTypes[i].equalsIgnoreCase(foodTypes[j])) {
+                    currentCount++;
+                }
+            }
+            if (currentCount > maxCount) {
+                maxCount = currentCount;
+                mostCommon = foodTypes[i];
+            }
+        }
+        System.out.println("Most common food type: " + mostCommon + " (appears " + maxCount + " times)");
+    }
+
+    // Validation methods using regex
+    static boolean validateName(String name) {
+        return Pattern.matches("[a-zA-Z\\s]+", name) && !name.trim().isEmpty();
+    }
+
+    static boolean validateStallName(String stallName) {
+        return Pattern.matches("[a-zA-Z\\s]+", stallName) && !stallName.trim().isEmpty();
+    }
+
+    static boolean validateContactNumber(String contact) {
+        return Pattern.matches("09\\d{9}", contact); // 11 digits starting with 09
+    }
+
+    static boolean validateFoodType(String foodType) {
+        return !foodType.trim().isEmpty();
+    }
+}
